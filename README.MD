@@ -1,4 +1,4 @@
-<h1 align="center">✨ Mercury Chat App ✨</h1>
+<h1 align="center">✨ Chatify Chat App ✨</h1>
 
 ![Demo App](/frontend/public/screenshot-for-readme.png)
 
