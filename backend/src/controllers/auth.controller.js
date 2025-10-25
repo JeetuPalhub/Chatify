@@ -50,6 +50,7 @@ if(newUser) {
 }
 
 } catch (error) {
-    console.log()
+    console.log("Error in signup controller:", error);
 }
-}
+};
+
