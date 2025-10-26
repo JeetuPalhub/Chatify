@@ -1,6 +1,9 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs"
 import { generateToken } from "../lib/utils.js";
+import { ENV } from "../lib/env.js";
+import { sendWelcomeEmail } from "../email/emailHandlers.js";
+
 
 
 export const signup = async(req, res) => {
@@ -36,8 +39,12 @@ const newUser = new User({
 })
 
 if(newUser) {
-    generateToken(newUser._id, res)
-    await newUser.save()
+    // generateToken(newUser._id, res)
+    // await newUser.save()
+
+    // persist user first, then issue auth cookie
+    const savedUser = await newUser.save();
+    generateToken(savedUser._id, res); 
 
     res.status(201).json({
         _id: newUser._id,
@@ -45,12 +52,22 @@ if(newUser) {
         email: newUser.email,
         profilePic: newUser.profilePic,
     });
+
+
+    try {
+        await sendWelcomeEmail(savedUser.email, savedUser.fullName, ENV.CLIENT_URL);
+    } catch (error) {
+        console.error("Failed to send welcome email:", error);
+    }
+
 }else{
     res.status(400).json({message: "Invalid user data"});
 }
 
 } catch (error) {
     console.log("Error in signup controller:", error);
-}
+    res.status(500).json({message: "Internal server error "});
+    }
 };
+
 
