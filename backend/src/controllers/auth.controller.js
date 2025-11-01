@@ -1,8 +1,8 @@
-import User from "../models/user.model.js";
+import User from "../models/User.js";
 import bcrypt from "bcryptjs"
 import { generateToken } from "../lib/utils.js";
 import { ENV } from "../lib/env.js";
-import { sendWelcomeEmail } from "../email/emailHandlers.js";
+import { sendWelcomeEmail } from "../emails/emailHandlers.js";
 
 
 
@@ -100,3 +100,11 @@ export const login = async (req, res) => {
   }
 };
 
+export const logout = (_, res) => {
+  res.cookie("jwt", "", { maxAge: 0 });
+  res.status(200).json({ message: "Logged out successfully "});
+};
+
+export const updateProfile = async(req, res) => {
+ 
+}
