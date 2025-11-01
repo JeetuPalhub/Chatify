@@ -3,6 +3,8 @@ import bcrypt from "bcryptjs"
 import { generateToken } from "../lib/utils.js";
 import { ENV } from "../lib/env.js";
 import { sendWelcomeEmail } from "../emails/emailHandlers.js";
+import cloudinary from "../lib/cloudinary.js";
+
 
 
 
@@ -106,5 +108,15 @@ export const logout = (_, res) => {
 };
 
 export const updateProfile = async(req, res) => {
- 
+ try {
+  const { profilePic } = req.body;
+  if(!profilePic) return res.status(400).json({message:"Profile pic is required"});
+
+  const userId = req.user._id;
+
+  await cloudinary.uploader.upload(profilePic)
+    
+ } catch (error) {
+  
+ }
 }
