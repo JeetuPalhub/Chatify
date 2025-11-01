@@ -32,13 +32,13 @@ if(user) return res.status(400).json({message:"Email already exists"})
 // 123456 => &weferhrqree_refeggg
 
 const salt = await bcrypt.genSalt(10)
-const hashedPassword = await bcrypt.hash(password,salt)
+const hashedPassword = await bcrypt.hash(password, salt)
 
 const newUser = new User({
     fullName,
     email,
-    password: hashedPassword
-})
+    password: hashedPassword,
+});
 
 if(newUser) {
     // generateToken(newUser._id, res)
@@ -114,9 +114,17 @@ export const updateProfile = async(req, res) => {
 
   const userId = req.user._id;
 
-  await cloudinary.uploader.upload(profilePic)
-    
+  const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+  const updateUser = await User.findByIdAndUpdate(
+    userId,
+    { profilePic: uploadResponse.secure_url },
+    { new: true }
+  );
+
+  res.status(200).json(updatedUser);
  } catch (error) {
-  
+  console.log("Error in update profile:", error);
+    res.status(500).json({ message: "Internal server error" });
  }
-}
+};
